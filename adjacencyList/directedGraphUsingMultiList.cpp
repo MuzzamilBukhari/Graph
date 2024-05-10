@@ -91,22 +91,6 @@ void addEdge(int vertex1, int vertex2, Vertex **head)
     }
     currEdge->next = ver1ptr;
   }
-  Edge *ver2ptr = (Edge *)malloc(sizeof(Edge));
-  ver2ptr->verAdd = ver1Node;
-  ver2ptr->next = NULL;
-  if (ver2Node->edgeHead == NULL)
-  {
-    ver2Node->edgeHead = ver2ptr;
-  }
-  else
-  {
-    Edge *currEdge = ver2Node->edgeHead;
-    while (currEdge->next != NULL)
-    {
-      currEdge = currEdge->next;
-    }
-    currEdge->next = ver2ptr;
-  }
 }
 
 void printEdgesInVertex(Vertex *head, int vertex)
@@ -269,9 +253,25 @@ int main()
       cout << "Make edge of which vertex? " << endl;
       cin >> vertex1;
       int vertex2;
-      cout << "Make a connection between " << vertex1 << " and?" << endl;
-      cin >> vertex2;
-      addEdge(vertex1, vertex2, &head);
+      int direction;
+      cout << "Make incoming connection or outgoing? enter 1 for incoming and 2 for outgoing : ";
+      cin >> direction;
+      if (direction == 1)
+      {
+        cout << vertex1 << " is adjacent from ? ";
+        cin >> vertex2;
+        addEdge(vertex2, vertex1, &head);
+      }
+      else if (direction == 2)
+      {
+        cout << vertex1 << " is adjacent to ? ";
+        cin >> vertex2;
+        addEdge(vertex1, vertex2, &head);
+      }
+      else
+      {
+        cout << "invalid value";
+      }
     }
     else if (n == 3)
     {
