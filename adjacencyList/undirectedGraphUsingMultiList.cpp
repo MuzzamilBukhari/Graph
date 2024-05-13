@@ -13,8 +13,65 @@ struct Vertex
   Vertex *next;
   Edge *edgeHead;
   bool visited;
+  Vertex *parent;
+  Vertex *child;
 };
 
+// Queue functions
+int front = -1;
+int rear = -1;
+
+void enQueue(Vertex *queue[], int size, Vertex *value)
+{
+  if (front == -1)
+  {
+    front = 0;
+    rear = 0;
+    queue[rear] = value;
+    return;
+  }
+  if ((rear == size - 1 && front == 0) || (rear + 1 == front))
+  {
+    cout << "Queue is full !!!" << endl;
+    return;
+  }
+  if (rear == size - 1 && front != 0)
+  {
+    rear = 0;
+  }
+  else
+  {
+    rear++;
+  }
+  queue[rear] = value;
+}
+
+Vertex *deQueue(Vertex *queue[], int size)
+{
+  if (rear == front && front == -1)
+  {
+    return NULL;
+  }
+  if (front == rear && front != -1)
+  {
+    Vertex *value = queue[front];
+    front = -1;
+    rear = -1;
+    return value;
+  }
+  Vertex *value = queue[front];
+  if (front == size - 1)
+  {
+    front = 0;
+  }
+  else
+  {
+    front++;
+  }
+  return value;
+}
+
+// Stack functions
 int top = -1;
 void push(Vertex *value, Vertex *stack[], int size)
 {
@@ -45,6 +102,8 @@ void addVertex(int rep, Vertex **head)
   ptr->next = NULL;
   ptr->edgeHead = NULL;
   ptr->visited = false;
+  ptr->parent = NULL;
+  ptr->child = NULL;
   if (*head == NULL)
   {
     *head = ptr;
@@ -202,6 +261,46 @@ void printVertices(Vertex *head)
   }
 }
 
+bool findCycle(Vertex *head)
+{
+
+  Vertex *stack[10];
+  Vertex *currVertex = head;
+  do
+  {
+    Edge *currEdge = currVertex->edgeHead;
+    while (currEdge != NULL && currEdge->verAdd->visited)
+    {
+      cout << currVertex->rep << " pehle curr vertex  uske bd edge " << currEdge->verAdd->rep;
+      if (currEdge->verAdd != currVertex->parent && currEdge->verAdd != currVertex->child && currVertex->child == NULL)
+      {
+        cout << "curr vertex ke child me" << currVertex->child->rep;
+        return true;
+      }
+      currEdge = currEdge->next;
+    }
+    currVertex->visited = true;
+    if (currEdge == NULL)
+    {
+      Vertex *child = currVertex;
+      currVertex = pop(stack, 10);
+      if (currVertex == NULL)
+      {
+        return false;
+      }
+      currVertex->child = child;
+    }
+    else
+    {
+      Vertex *parent = currVertex;
+      push(currVertex, stack, 10);
+      currVertex = currEdge->verAdd;
+      currVertex->parent = parent;
+    }
+  } while (currVertex != NULL);
+  return false;
+}
+
 int findDegree(int vertex, Vertex *head)
 {
   if (head == NULL)
@@ -232,6 +331,73 @@ int findDegree(int vertex, Vertex *head)
   }
   return count;
 }
+
+void breadthFirstSearch(Vertex *head)
+{
+  Vertex *queue[10];
+  Vertex *curr = head;
+  do
+  {
+    if (curr->visited == false)
+    {
+      cout << curr->rep << " ";
+      curr->visited = true;
+      Edge *currEdge = curr->edgeHead;
+      while (currEdge != NULL)
+      {
+        enQueue(queue, 10, currEdge->verAdd);
+        currEdge = currEdge->next;
+      }
+    }
+    curr = deQueue(queue, 10);
+  } while (curr != NULL);
+  curr = head;
+  while (curr != NULL)
+  {
+    curr->visited = false;
+    curr = curr->next;
+  }
+}
+
+void depthSearchFirst(Vertex *head)
+{
+
+  Vertex *stack[10];
+  Vertex *currVertex = head;
+  while (currVertex != NULL)
+  {
+    currVertex->visited = false;
+    currVertex = currVertex->next;
+  }
+  currVertex = head;
+  cout << currVertex->rep << " ";
+  do
+  {
+    Edge *currEdge = currVertex->edgeHead;
+    while (currEdge != NULL && currEdge->verAdd->visited)
+    {
+      currEdge = currEdge->next;
+    }
+    currVertex->visited = true;
+    if (currEdge == NULL)
+    {
+      currVertex = pop(stack, 10);
+    }
+    else
+    {
+      push(currVertex, stack, 10);
+      currVertex = currEdge->verAdd;
+      cout << currVertex->rep << " ";
+    }
+  } while (currVertex != NULL);
+  currVertex = head;
+  while (currVertex != NULL)
+  {
+    currVertex->visited = false;
+    currVertex = currVertex->next;
+  }
+}
+
 int main()
 {
   Vertex *head = NULL;
@@ -240,10 +406,14 @@ int main()
   // addVertex(3, &head);
   // addVertex(4, &head);
   // addVertex(5, &head);
-  // addEdge(2, 1, &head);
-  // addEdge(2, 4, &head);
-  // addEdge(3, 1, &head);
-  // addEdge(3, 5, &head);
+  // addVertex(6, &head);
+  // addVertex(7, &head);
+  // addEdge(1, 2, &head);
+  // addEdge(1, 5, &head);
+  // addEdge(2, 7, &head);
+  // addEdge(2, 3, &head);
+  // addEdge(3, 4, &head);
+  // addEdge(3, 6, &head);
   int n;
   do
   {
@@ -254,7 +424,9 @@ int main()
          << "Enter 5 to find degree " << endl
          << "Enter 6 to print vertices " << endl
          << "Enter 7 to print edges in vertices" << endl
-         << "Enter  8 to Quit" << endl;
+         << "Enter 8 to apply breadth first search " << endl
+         << "Enter 9 to apply depth first search " << endl
+         << "Enter 10 to Quit" << endl;
     cin >> n;
     if (n == 1)
     {
@@ -285,6 +457,8 @@ int main()
     }
     else if (n == 4)
     {
+      bool isCycle = findCycle(head);
+      isCycle ? cout << "Graph is cyclic " << endl : cout << "Graph is Acyclic " << endl;
     }
     else if (n == 5)
     {
@@ -307,6 +481,14 @@ int main()
     }
     else if (n == 8)
     {
+      breadthFirstSearch(head);
+    }
+    else if (n == 9)
+    {
+      depthSearchFirst(head);
+    }
+    else if (n == 10)
+    {
       cout << "Quit" << endl;
     }
     else
@@ -314,5 +496,5 @@ int main()
       cout << "Invalid" << endl;
     }
 
-  } while (n != 8);
+  } while (n != 10);
 }
