@@ -267,7 +267,7 @@ void printVertices(Vertex *head)
   }
 }
 
-int findDegree(int vertex, Vertex *head)
+int findOutDegree(int vertex, Vertex *head)
 {
   if (head == NULL)
   {
@@ -295,6 +295,41 @@ int findDegree(int vertex, Vertex *head)
     count++;
     currEdge = currEdge->next;
   }
+  return count;
+}
+
+int findInDegree(int vertex, Vertex *head)
+{
+  Vertex *vertexNode = head;
+  while (vertexNode != NULL)
+  {
+    if (vertexNode->rep == vertex)
+    {
+      break;
+    }
+    vertexNode = vertexNode->next;
+  }
+  if (vertexNode == NULL)
+  {
+    cout << "Node not found in graph " << endl;
+    return -1;
+  }
+  int count = 0;
+  Vertex *currVertex = head;
+  do
+  {
+    Edge *currEdge = currVertex->edgeHead;
+    while (currEdge != NULL)
+    {
+      if (currEdge->verAdd == vertexNode)
+      {
+        count++;
+      }
+      currEdge = currEdge->next;
+    }
+
+    currVertex = currVertex->next;
+  } while (currVertex != NULL);
   return count;
 }
 
@@ -361,19 +396,22 @@ void depthSearchFirst(Vertex *head)
 int main()
 {
   Vertex *head = NULL;
-  // addVertex(1, &head);
-  // addVertex(2, &head);
-  // addVertex(3, &head);
-  // addVertex(4, &head);
-  // addVertex(5, &head);
-  // addVertex(6, &head);
-  // addVertex(7, &head);
-  // addEdge(1, 2, &head);
-  // addEdge(1, 5, &head);
-  // addEdge(2, 7, &head);
-  // addEdge(2, 3, &head);
-  // addEdge(3, 4, &head);
-  // addEdge(3, 6, &head);
+  addVertex(1, &head);
+  addVertex(2, &head);
+  addVertex(3, &head);
+  addVertex(4, &head);
+  addVertex(5, &head);
+  addVertex(6, &head);
+  addVertex(7, &head);
+  addEdge(2, 1, &head);
+  addEdge(3, 2, &head);
+  addEdge(4, 2, &head);
+  addEdge(4, 3, &head);
+  addEdge(1, 4, &head);
+  addEdge(5, 1, &head);
+  addEdge(6, 5, &head);
+  addEdge(5, 7, &head);
+  addEdge(7, 6, &head);
 
   int n;
   do
@@ -441,8 +479,24 @@ int main()
       int vertex;
       cout << "for which vertex you want to find degree : ";
       cin >> vertex;
-      int degree = findDegree(vertex, head);
-      cout << "Degree of vertex " << vertex << " is " << degree << endl;
+      cout << "Indegree or outdegree ? for indegree enter 1, for outdegree enter 2 : ";
+      int a;
+      cin >> a;
+      int degree;
+      if (a == 1)
+      {
+        degree = findInDegree(vertex, head);
+        cout << "InDegree of vertex " << vertex << " is " << degree << endl;
+      }
+      else if (a == 2)
+      {
+        degree = findOutDegree(vertex, head);
+        cout << "OutDegree of vertex " << vertex << " is " << degree << endl;
+      }
+      else
+      {
+        cout << "invalid" << endl;
+      }
     }
     else if (n == 6)
     {
