@@ -13,7 +13,6 @@ struct Vertex
   Vertex *next;
   Edge *edgeHead;
   bool visited;
-  Vertex *parent;
 };
 
 // Queue functions
@@ -101,7 +100,6 @@ void addVertex(int rep, Vertex **head)
   ptr->next = NULL;
   ptr->edgeHead = NULL;
   ptr->visited = false;
-  ptr->parent = NULL;
   if (*head == NULL)
   {
     *head = ptr;
@@ -241,16 +239,9 @@ bool findCycle(Vertex *head)
   do
   {
     Edge *currEdge = currVertex->edgeHead;
-    while (currEdge != NULL && currEdge->verAdd->visited)
+    if (currEdge->verAdd->visited)
     {
-      if (currEdge->verAdd == currVertex->parent)
-      {
-        currEdge = currEdge->next;
-      }
-      else
-      {
-        return true;
-      }
+      return true;
     }
     currVertex->visited = true;
     if (currEdge == NULL)
@@ -259,10 +250,8 @@ bool findCycle(Vertex *head)
     }
     else
     {
-      Vertex *parent = currVertex;
       push(currVertex, stack, 10);
       currVertex = currEdge->verAdd;
-      currVertex->parent = parent;
     }
   } while (currVertex != NULL);
   return false;
