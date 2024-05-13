@@ -234,27 +234,6 @@ void findPath(int src, int dest, Vertex *head)
 
 bool findCycle(Vertex *head)
 {
-  Vertex *stack[10];
-  Vertex *currVertex = head;
-  do
-  {
-    Edge *currEdge = currVertex->edgeHead;
-    if (currEdge->verAdd->visited)
-    {
-      return true;
-    }
-    currVertex->visited = true;
-    if (currEdge == NULL)
-    {
-      currVertex = pop(stack, 10);
-    }
-    else
-    {
-      push(currVertex, stack, 10);
-      currVertex = currEdge->verAdd;
-    }
-  } while (currVertex != NULL);
-  return false;
 }
 
 void printVertices(Vertex *head)
@@ -396,22 +375,22 @@ void depthSearchFirst(Vertex *head)
 int main()
 {
   Vertex *head = NULL;
-  addVertex(1, &head);
-  addVertex(2, &head);
-  addVertex(3, &head);
-  addVertex(4, &head);
-  addVertex(5, &head);
-  addVertex(6, &head);
-  addVertex(7, &head);
-  addEdge(2, 1, &head);
-  addEdge(3, 2, &head);
-  addEdge(4, 2, &head);
-  addEdge(4, 3, &head);
-  addEdge(1, 4, &head);
-  addEdge(5, 1, &head);
-  addEdge(6, 5, &head);
-  addEdge(5, 7, &head);
-  addEdge(7, 6, &head);
+  // addVertex(1, &head);
+  // addVertex(2, &head);
+  // addVertex(3, &head);
+  // addVertex(4, &head);
+  // addVertex(5, &head);
+  // addVertex(6, &head);
+  // addVertex(7, &head);
+  // addEdge(2, 1, &head);
+  // addEdge(3, 2, &head);
+  // addEdge(4, 2, &head);
+  // addEdge(4, 3, &head);
+  // addEdge(1, 4, &head);
+  // addEdge(5, 1, &head);
+  // addEdge(6, 5, &head);
+  // addEdge(5, 7, &head);
+  // addEdge(7, 6, &head);
 
   int n;
   do

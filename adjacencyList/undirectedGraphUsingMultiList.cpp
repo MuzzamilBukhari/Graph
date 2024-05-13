@@ -13,8 +13,6 @@ struct Vertex
   Vertex *next;
   Edge *edgeHead;
   bool visited;
-  Vertex *parent;
-  Vertex *child;
 };
 
 // Queue functions
@@ -102,8 +100,6 @@ void addVertex(int rep, Vertex **head)
   ptr->next = NULL;
   ptr->edgeHead = NULL;
   ptr->visited = false;
-  ptr->parent = NULL;
-  ptr->child = NULL;
   if (*head == NULL)
   {
     *head = ptr;
@@ -263,42 +259,6 @@ void printVertices(Vertex *head)
 
 bool findCycle(Vertex *head)
 {
-
-  Vertex *stack[10];
-  Vertex *currVertex = head;
-  do
-  {
-    Edge *currEdge = currVertex->edgeHead;
-    while (currEdge != NULL && currEdge->verAdd->visited)
-    {
-      cout << currVertex->rep << " pehle curr vertex  uske bd edge " << currEdge->verAdd->rep;
-      if (currEdge->verAdd != currVertex->parent && currEdge->verAdd != currVertex->child && currVertex->child == NULL)
-      {
-        cout << "curr vertex ke child me" << currVertex->child->rep;
-        return true;
-      }
-      currEdge = currEdge->next;
-    }
-    currVertex->visited = true;
-    if (currEdge == NULL)
-    {
-      Vertex *child = currVertex;
-      currVertex = pop(stack, 10);
-      if (currVertex == NULL)
-      {
-        return false;
-      }
-      currVertex->child = child;
-    }
-    else
-    {
-      Vertex *parent = currVertex;
-      push(currVertex, stack, 10);
-      currVertex = currEdge->verAdd;
-      currVertex->parent = parent;
-    }
-  } while (currVertex != NULL);
-  return false;
 }
 
 int findDegree(int vertex, Vertex *head)
